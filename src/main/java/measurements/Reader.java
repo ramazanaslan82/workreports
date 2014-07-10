@@ -2,7 +2,6 @@ package measurements;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -61,15 +60,51 @@ public class Reader {
 		List<Pair<Row, Row>> rowPairs = new ArrayList<Pair<Row, Row>>();
 		int lastRowNum = sheet.getLastRowNum();
 		System.out.println("There is " + lastRowNum + " rows in sheet");
-		for (int i = 0; i < lastRowNum; i += 2) {
-			System.out.println("Loading row " + i + " and " + (i+1) + " from sheet");
-			Pair<Row, Row> pair = new Pair<Row, Row>(sheet.getRow(i),
-					sheet.getRow(i + 1));
+		for (int i = 0; i < lastRowNum; i ++) {
+
+			Row row = sheet.getRow(i);
+			Row nextRow = sheet.getRow(i+1);
+			if( isEmptyLine(row) )
+			{
+				// Empty row found.. jump to next..
+				continue;
+			}
+			
+			String firstCellValue = getFirstCellValue(row);
+			System.out.println("Loading row[" + i + "] and row[" + (i+1) + "] from sheet.. First Cell Value:"+firstCellValue);
+
+			Pair<Row, Row> pair = new Pair<Row, Row>(row,nextRow);
 			rowPairs.add(pair);
+
+			System.out.print("Double row read.. continue with next...");
+			// Double row read.. continue with next..
+			i++;
 		}
 		return rowPairs;
 	}
+	
+	private static String getFirstCellValue(Row row)
+	{
+		List<Cell> cells = loadCells(row);
+		Cell cell = cells.get(0);
+		cell.getDateCellValue();
+		return cell.getDateCellValue().toString();
+	}
 
+	private static boolean isEmptyLine(Row row)
+	{
+		List<Cell> cells = loadCells(row);
+		Cell cell = cells.get(1);
+		String value = cell.getStringCellValue();
+		if("Pazar".equals(value))
+		{
+			System.out.println("Row is empty.. value:"+value);
+			return true;
+		}
+		System.out.println("Row is NOT empty.. value:"+value);
+		return false;
+	}
+	
 	private static List<Cell> loadCells(Row row)
 	{
 		List<Cell> cells = new ArrayList<Cell>();
