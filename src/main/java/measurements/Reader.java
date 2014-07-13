@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -64,10 +65,47 @@ public class Reader {
 
 			Row row = sheet.getRow(i);
 			Row nextRow = sheet.getRow(i+1);
-			if( isEmptyLine(row) )
+			if(null == row)
+			{
+				// quit if row not exists..
+				System.out.println("Row [" + i + "] is empty");
+				continue;
+			}
+			
+			if(null == nextRow)
+			{
+				// quit if next row not exists..
+				System.out.println("Row [" + (i + 1) + "] is empty");
+				continue;
+			}
+
+			if( isHolidayLine(row) )
 			{
 				// Empty row found.. jump to next..
+				System.out.println("Row [" + i + "] is holiday");
 				continue;
+			}
+			
+			if(isRowContainsNextDay(nextRow))
+			{
+				if( isHolidayLine(nextRow) )
+				{
+					// Next row is holiday...
+					System.out.println("Row [" + (i + 1) + "] is holiday");
+					continue;
+				}
+				else
+				{
+					// Next row is date...
+					System.out.println("Row [" + (i + 1) + "] is work day");
+					continue;
+				}
+			}
+			
+			if(isRowHasFutureDate(row))
+			{
+				System.out.println("Row [" + (i + 1) + "] has future date. Breaking loop.");
+				break;
 			}
 			
 			String firstCellValue = getFirstCellValue(row);
@@ -91,17 +129,57 @@ public class Reader {
 		return cell.getDateCellValue().toString();
 	}
 
-	private static boolean isEmptyLine(Row row)
+	private static boolean isHolidayLine(Row row)
 	{
 		List<Cell> cells = loadCells(row);
+		if(cells == null || cells.size()==0)
+		{
+			System.out.println("Row not contains cells");
+			return false;
+		}
+		
+		System.out.println("Row contains " + cells.size() + " cells");
+
 		Cell cell = cells.get(1);
+		int cellType = cell.getCellType();
+		if(HSSFCell.CELL_TYPE_BLANK == cellType)
+		{
+			System.out.println("Cell is EMPTY");
+			return false;
+		}
+
 		String value = cell.getStringCellValue();
 		if("Pazar".equals(value))
 		{
-			System.out.println("Row is empty.. value:"+value);
+			System.out.println("Cell is SUNDAY:"+value);
 			return true;
 		}
-		System.out.println("Row is NOT empty.. value:"+value);
+		return false;
+	}
+
+	private static boolean isRowContainsNextDay(Row row) {
+		List<Cell> cells = loadCells(row);
+		Cell cell = cells.get(0); // Not : date alanõ ilk kolon
+		Date value = cell.getDateCellValue();
+		if (null != value) {
+			System.out.println("Next line has date field:" + value);
+			return true;
+		}
+		return false;
+	}
+	
+	private static boolean isRowHasFutureDate(Row row) {
+		List<Cell> cells = loadCells(row);
+		Cell cell = cells.get(0); // Not : date alanõ ilk kolon
+		Date value = cell.getDateCellValue();
+		if (null != value) {
+			System.out.println("Line has date field:" + value);
+			if( value.after(new Date()) )
+			{
+				System.out.println("Line has date field:" + value + " and is future date");
+				return true;
+			}
+		}
 		return false;
 	}
 	
@@ -125,6 +203,42 @@ public class Reader {
 		return date;
 	}
 	
+	private static List<Pair<String, String>> readWorkLogs(Pair<Row, Row> row)
+	{
+		List<Pair<String, String>> logs = new ArrayList<Pair<String,String>>();
+		System.out.println(readDate(row) + " WORKLOG reading...");
+		
+		Row measurementDetailsRow = row.getValue0();
+		Row enstrumentAndWorkerDetailsRow = row.getValue1();
+
+		List<Cell> measurementDetailsCells = loadCells(measurementDetailsRow);
+		List<Cell> enstrumentAndWorkerDetailsCells = loadCells(enstrumentAndWorkerDetailsRow);
+		System.out.println("Row has " + measurementDetailsCells.size() + "cells.");
+		System.out.println("Row has " + enstrumentAndWorkerDetailsCells.size() + "cells.");
+		for(int i = 2; i<measurementDetailsCells.size(); i++)
+		{
+			String measurementDetail = "";
+			if(null != measurementDetailsCells.get(i))
+			{
+				measurementDetail = measurementDetailsCells.get(i).getStringCellValue();	
+			}
+			
+			String enstrumentDetail = "";
+			if(enstrumentAndWorkerDetailsCells.size() > i)
+			{
+				if(null != enstrumentAndWorkerDetailsCells.get(i))
+				{
+					enstrumentDetail = enstrumentAndWorkerDetailsCells.get(i).getStringCellValue();	
+				}
+					
+			}
+			
+			Pair<String, String> log = new Pair<String, String>(measurementDetail, enstrumentDetail);
+			logs.add(log);
+		}
+		return logs;
+	}
+	
 	public static void main(String[] args) {
 		InputStream inp = loadFile("excel-25-06-2014.xls");
 		Workbook wb = createWorkbook(inp);
@@ -135,7 +249,16 @@ public class Reader {
 		{
 			Date date = readDate(rowPair);
 			System.out.println("Date of row is " + date);
+			List<Pair<String, String>> dailyWorkLogs = readWorkLogs(rowPair);
+			for(Pair<String,String> workLog:dailyWorkLogs)
+			{
+				System.out.println("*** " + date + " ****");
+				System.out.println(workLog.getValue0());
+				System.out.println("----------");
+				System.out.println(workLog.getValue1());
+			}
 		}
+		
 		/*
 		Cell cell = row.getCell(3);
 		if (cell == null)
