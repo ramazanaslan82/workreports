@@ -1,4 +1,4 @@
-package measurements;
+package com.measurements.equipments;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,12 +6,12 @@ import java.util.List;
 import org.apache.commons.collections.Closure;
 import org.apache.commons.collections.CollectionUtils;
 
-import equipments.Equipment;
+import com.measurements.employees.Employee;
 
-public class MeasurementServiceImpl {
+public class EquipmentServiceImpl implements EquipmentService {
 	private static List<String> names = new ArrayList<String>();
 
-	public MeasurementServiceImpl() {
+	public EquipmentServiceImpl() {
 		super();
 		buildEquipments();
 	}

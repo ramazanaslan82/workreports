@@ -1,10 +1,10 @@
-package workers;
+package com.measurements.employees;
 
-public class Worker {
+public class Employee {
 
 	private String name;
 
-	public Worker(String name) {
+	public Employee(String name) {
 		super();
 		this.name = name;
 	}

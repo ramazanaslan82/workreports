@@ -1,4 +1,4 @@
-package wrappers;
+package com.measurements.wrappers;
 
 public interface Constants {
 	interface Paths {

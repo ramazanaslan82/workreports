@@ -1,4 +1,4 @@
-package wrappers;
+package com.measurements.wrappers;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
-import measurements.MeasureEquipment;
-import measurements.Measurement;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -23,11 +20,13 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.javatuples.Pair;
 
-import equipments.EquipmentService;
-import equipments.EquipmentServiceImpl;
-import workers.WorkerServiceImpl;
-import worklogs.Event;
-import worklogs.WorkLog;
+import com.measurements.employees.EmployeeServiceImpl;
+import com.measurements.equipments.EquipmentService;
+import com.measurements.equipments.EquipmentServiceImpl;
+import com.measurements.measurements.MeasureEquipment;
+import com.measurements.measurements.Measurement;
+import com.measurements.worklogs.Event;
+import com.measurements.worklogs.WorkLog;
 
 public class Reader {
 
@@ -160,7 +159,7 @@ public class Reader {
 
 	private static boolean isRowContainsNextDay(Row row) {
 		List<Cell> cells = loadCells(row);
-		Cell cell = cells.get(0); // Not : date alanõ ilk kolon
+		Cell cell = cells.get(0); // Not : date alanï¿½ ilk kolon
 		Date value = cell.getDateCellValue();
 		if (null != value) {
 			// System.out.println("Next line has date field:" + value);
@@ -171,7 +170,7 @@ public class Reader {
 
 	private static boolean isRowHasFutureDate(Row row) {
 		List<Cell> cells = loadCells(row);
-		Cell cell = cells.get(0); // Not : date alanõ ilk kolon
+		Cell cell = cells.get(0); // Not : date alanï¿½ ilk kolon
 		Date value = cell.getDateCellValue();
 		if (null != value) {
 			// System.out.println("Line has date field:" + value);
@@ -221,7 +220,7 @@ public class Reader {
 					String string2 = strings2[1];
 
 					Item item = new Item();
-					item.setCount(1); // @TODO : Bakõlacak...
+					item.setCount(1); // @TODO : Bakï¿½lacak...
 					item.setEquipmentName("");
 					item.setEquipmentName(string2);
 
@@ -253,7 +252,7 @@ public class Reader {
 					String string2 = strings2[1];
 
 					MeasureEquipment item = new MeasureEquipment();
-					item.setCount(1); // @TODO : Bakõlacak...
+					item.setCount(1); // @TODO : Bakï¿½lacak...
 					item.setToolName("");
 					item.setToolName(string2);
 
@@ -327,7 +326,7 @@ public class Reader {
 	}
 
 	private static List<String> getWorkersForLine(String line) {
-		WorkerServiceImpl workerService = new WorkerServiceImpl();
+		EmployeeServiceImpl workerService = new EmployeeServiceImpl();
 
 		List<String> workersAtWork = new ArrayList<String>();
 

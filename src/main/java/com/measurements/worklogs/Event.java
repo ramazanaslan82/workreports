@@ -1,10 +1,10 @@
-package worklogs;
+package com.measurements.worklogs;
 
 import java.util.List;
 
-import workers.Worker;
-import measurements.MeasureEquipment;
-import measurements.Measurement;
+import com.measurements.employees.Employee;
+import com.measurements.measurements.MeasureEquipment;
+import com.measurements.measurements.Measurement;
 
 public class Event {
 
@@ -13,7 +13,7 @@ public class Event {
 	private List<Measurement> measurements;
 	private String vehicle;
 	private List<MeasureEquipment> equipments;
-	private List<Worker> workers;
+	private List<Employee> workers;
 
 	public String getCompanyName() {
 		return companyName;
@@ -55,11 +55,11 @@ public class Event {
 		this.equipments = equipments;
 	}
 
-	public List<Worker> getWorkers() {
+	public List<Employee> getWorkers() {
 		return workers;
 	}
 
-	public void setWorkers(List<Worker> workers) {
+	public void setWorkers(List<Employee> workers) {
 		this.workers = workers;
 	}
 

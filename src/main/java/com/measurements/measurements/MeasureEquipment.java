@@ -1,4 +1,4 @@
-package measurements;
+package com.measurements.measurements;
 
 public class MeasureEquipment {
 

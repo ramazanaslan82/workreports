@@ -1,4 +1,4 @@
-package worklogs;
+package com.measurements.worklogs;
 
 import java.util.ArrayList;
 import java.util.Date;

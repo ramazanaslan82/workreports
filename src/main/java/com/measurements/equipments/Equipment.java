@@ -1,4 +1,4 @@
-package equipments;
+package com.measurements.equipments;
 
 public class Equipment {
 
