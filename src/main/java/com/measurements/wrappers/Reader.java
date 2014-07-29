@@ -248,13 +248,19 @@ public class Reader {
 			for(String equipmentName : equipmentNames)
 			{
 				if (StringUtils.containsIgnoreCase(string, equipmentName)) {
+					System.out.println("string:("+string+") contains equipmentName:("+equipmentName+")");
 					String[] strings2 = StringUtils.split(string, equipmentName, 10);
-					String string2 = strings2[1];
+					for(int i=0; i>strings.length; i++)
+					{
+						System.out.println("equipments["+i+"]:"+strings2[i]);	
+					}
+					
+					//String string2 = strings2[0];
 
 					MeasureEquipment item = new MeasureEquipment();
 					item.setCount(1); // @TODO : Bak�lacak...
 					item.setToolName("");
-					item.setToolName(string2);
+					item.setToolName(equipmentName);
 
 					items.add(item);
 				}	
@@ -270,7 +276,8 @@ public class Reader {
 			String string = strings[i1];
 			if (StringUtils.containsIgnoreCase(string, "Yer:")) {
 				String[] strings2 = StringUtils.split(string, "Yer:", 3);
-				String string2 = strings2[1];
+				System.out.println("string("+string+") contains 'Yer:' strings2.size:"+strings2.length);
+				String string2 = strings2[0];
 				return string2;
 			}
 		}
@@ -341,20 +348,20 @@ public class Reader {
 
 	public static void main(String[] args) {
 
-		InputStream inp = loadFile("excel-25-06-2014.xls");
+		InputStream inp = loadFile("OLCUM_PROGRAMI-25.06.2014.xls");
 		Workbook wb = createWorkbook(inp);
 		List<Sheet> sheets = getSheets(wb);
 		Sheet sheet = sheets.get(0);
 		List<Pair<Row, Row>> rowPairs = loadPairs(sheet);
+		System.out.println("all pairs read!");
 		int totalPairs = rowPairs.size();
 		int totalCells = 0;
 		int totalFailedCells = 0;
 
 		List<WorkLog> workLogs = new ArrayList<WorkLog>();
-		
-		
 		for (Pair<Row, Row> rowPair : rowPairs) {
 			Date date = readDate(rowPair);
+			System.out.println("date read as : " + date);
 			
 			WorkLog day = new WorkLog();
 			day.setDay(date);
@@ -363,6 +370,7 @@ public class Reader {
 			
 			// System.out.println("Date of row is " + date);
 			List<Pair<String, String>> dailyEvents = readEvents(rowPair);
+			System.out.println("dailyEvents read. size:"+dailyEvents.size());
 			totalCells = totalCells + dailyEvents.size();
 
 			for (Pair<String, String> event : dailyEvents) {
@@ -371,9 +379,16 @@ public class Reader {
 				// System.out.println("----------");
 				// System.out.println(workLog.getValue1());
 				// System.out.println("==========");
+				Event eventObj = new Event();
+				
+				
+				
 				List<String> workers = getWorkersForLine(event.getValue0());
 				if (workers.size() > 0) {
-					// hede
+					EmployeeServiceImpl employeeServiceImpl = new EmployeeServiceImpl();
+					eventObj.setWorkers(employeeServiceImpl.getAllByNames(workers));
+					eventObj.setEquipments(equipments);
+					
 				} else {
 					totalFailedCells++;
 				}

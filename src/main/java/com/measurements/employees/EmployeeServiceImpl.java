@@ -48,4 +48,25 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return names;
 	}
 
+	public Employee getByName(String name) {
+		if (names.contains(name))
+		{
+			return new Employee(name);
+		}
+		else
+		{
+			return new Employee("unknown_"+name);
+		}
+	}
+
+	
+	public List<Employee> getAllByNames(List<String> employeeNames)
+	{
+		List<Employee> employees = new ArrayList<Employee>();
+		for(String employeeName:employeeNames)
+		{
+			employees.add(getByName(employeeName));
+		}
+		return employees;
+	}
 }

@@ -5,6 +5,7 @@
 target/
 bin/
 tmp/
+target/
 *.tmp
 *.bak
 *.swp
