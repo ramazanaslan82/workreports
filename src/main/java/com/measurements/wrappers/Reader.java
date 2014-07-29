@@ -2,8 +2,11 @@ package com.measurements.wrappers;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +23,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.javatuples.Pair;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonWriter;
 import com.measurements.employees.EmployeeServiceImpl;
 import com.measurements.equipments.EquipmentService;
 import com.measurements.equipments.EquipmentServiceImpl;
@@ -199,97 +204,99 @@ public class Reader {
 		Date date = cell.getDateCellValue();
 		return date;
 	}
-	
-	private static List<Measurement> readMeasurements(String measurementDetail)
-	{
-		/*EquipmentServiceImpl equipmentServiceImpl = new EquipmentServiceImpl();
-		List<String> equipmentNames = equipmentServiceImpl.getEquipmentNames();
-		
-		List<Item> items = new ArrayList<Item>();
-		
-		Measurement measurement = new Measurement();
-		measurement.setName(name);
-		
-		String[] strings = StringUtils.split(enstrumentDetail, "\n");
-		for (int i1 = 0; i1 < strings.length; i1++) {
-			String string = strings[i1];
-			for(String equipmentName : equipmentNames)
-			{
-				if (StringUtils.containsIgnoreCase(string, equipmentName)) {
-					String[] strings2 = StringUtils.split(string, equipmentName, 10);
-					String string2 = strings2[1];
 
-					Item item = new Item();
-					item.setCount(1); // @TODO : Bak�lacak...
-					item.setEquipmentName("");
-					item.setEquipmentName(string2);
-
-					items.add(item);
-				}	
-			}
-		}
-		
-		return items;*/
+	private static List<Measurement> readMeasurements(String measurementDetail) {
+		/*
+		 * EquipmentServiceImpl equipmentServiceImpl = new
+		 * EquipmentServiceImpl(); List<String> equipmentNames =
+		 * equipmentServiceImpl.getEquipmentNames();
+		 * 
+		 * List<Item> items = new ArrayList<Item>();
+		 * 
+		 * Measurement measurement = new Measurement();
+		 * measurement.setName(name);
+		 * 
+		 * String[] strings = StringUtils.split(enstrumentDetail, "\n"); for
+		 * (int i1 = 0; i1 < strings.length; i1++) { String string =
+		 * strings[i1]; for(String equipmentName : equipmentNames) { if
+		 * (StringUtils.containsIgnoreCase(string, equipmentName)) { String[]
+		 * strings2 = StringUtils.split(string, equipmentName, 10); String
+		 * string2 = strings2[1];
+		 * 
+		 * Item item = new Item(); item.setCount(1); // @TODO : Bak�lacak...
+		 * item.setEquipmentName(""); item.setEquipmentName(string2);
+		 * 
+		 * items.add(item); } } }
+		 * 
+		 * return items;
+		 */
 		return null;
 	}
 
-	private static List<MeasureEquipment> readEquipments(String enstrumentDetail)
-	{
+	private static List<MeasureEquipment> readEquipments(String enstrumentDetail) {
 		EquipmentServiceImpl equipmentServiceImpl = new EquipmentServiceImpl();
 		List<String> equipmentNames = equipmentServiceImpl.getEquipmentNames();
-		
-		List<MeasureEquipment> items = new ArrayList<MeasureEquipment>();
-		
-		
-		
-		String[] strings = StringUtils.split(enstrumentDetail, "\n");
-		for (int i1 = 0; i1 < strings.length; i1++) {
-			String string = strings[i1];
-			for(String equipmentName : equipmentNames)
-			{
-				if (StringUtils.containsIgnoreCase(string, equipmentName)) {
-					System.out.println("string:("+string+") contains equipmentName:("+equipmentName+")");
-					String[] strings2 = StringUtils.split(string, equipmentName, 10);
-					for(int i=0; i>strings.length; i++)
-					{
-						System.out.println("equipments["+i+"]:"+strings2[i]);	
-					}
-					
-					//String string2 = strings2[0];
+		System.out.println("equipmentNames.size():"+equipmentNames.size());
 
+		List<MeasureEquipment> items = new ArrayList<MeasureEquipment>();
+
+		String[] strings = StringUtils.split(enstrumentDetail, "\n");
+		System.out.println("enstrumentDetail splitted on (" + strings.length + ") pieces...");
+		for (int i1 = 0; i1 < strings.length; i1++) {
+			String string = (strings[i1]).toLowerCase();
+			for (String equipmentName : equipmentNames) {
+				int indexOf = StringUtils.indexOf(string, equipmentName);
+				if (indexOf >= 0) {
+					System.out.println("equipmentName:(" + equipmentName
+							+ ") found on text:(" + string + ")");
+
+					String remaining = string.replaceFirst(
+							equipmentName.toLowerCase(), "").replace(" adet",
+							"");
+					int m = 1;
+					try {
+						m = Integer.valueOf(remaining);
+					} catch (Exception e) {
+						System.out.println("NO NUMBER found on text:(" + string
+								+ ") remaining:(" + remaining + ")");
+					}
+
+					/*
+					 * System.out.println("string:(" + string +
+					 * ") contains equipmentName:(" + equipmentName + ")");
+					 */
 					MeasureEquipment item = new MeasureEquipment();
-					item.setCount(1); // @TODO : Bak�lacak...
-					item.setToolName("");
+					item.setCount(m);
 					item.setToolName(equipmentName);
 
 					items.add(item);
-				}	
+				}
 			}
 		}
-		
+
 		return items;
 	}
-	
+
 	private static String readLocation(String measurementDetail) {
 		String[] strings = StringUtils.split(measurementDetail, "\n");
 		for (int i1 = 0; i1 < strings.length; i1++) {
-			String string = strings[i1];
-			if (StringUtils.containsIgnoreCase(string, "Yer:")) {
-				String[] strings2 = StringUtils.split(string, "Yer:", 3);
-				System.out.println("string("+string+") contains 'Yer:' strings2.size:"+strings2.length);
-				String string2 = strings2[0];
-				return string2;
+			String lowerCase = (strings[i1]).toLowerCase();
+			String textToSearch = "yer:";
+			int indexOf = StringUtils.indexOf(lowerCase, textToSearch);
+			// System.out.println("Found ("+textToSearch+") at ("+indexOf+") from ("+lowerCase+")");
+
+			if (indexOf >= 0) {
+				String remaining = lowerCase.replaceFirst(textToSearch, "");
+				// System.out.println("DEBUG Searching ("+textToSearch+") in ("+strings[i1]+") on lowercase value ("+lowerCase+") remaining ("+remaining+")");
+				return remaining;
 			}
 		}
 		return "";
 	}
-	
-	private static List<Pair<String, String>> readEvents(Pair<Row, Row> row) {
-		
+
+	private static List<Event> readEvents(Pair<Row, Row> row) {
+
 		List<Event> events = new ArrayList<Event>();
-		
-		List<Pair<String, String>> logs = new ArrayList<Pair<String, String>>();
-		// System.out.println(readDate(row) + " WORKLOG reading...");
 
 		Row measurementDetailsRow = row.getValue0();
 		Row enstrumentAndWorkerDetailsRow = row.getValue1();
@@ -304,32 +311,46 @@ public class Reader {
 			String measurementDetail = "";
 			if (null != measurementDetailsCells.get(i)) {
 				measurementDetail = measurementDetailsCells.get(i)
-						.getStringCellValue();
+						.getStringCellValue().toLowerCase();
 			}
 
 			String enstrumentDetail = "";
 			if (enstrumentAndWorkerDetailsCells.size() > i) {
 				if (null != enstrumentAndWorkerDetailsCells.get(i)) {
 					enstrumentDetail = enstrumentAndWorkerDetailsCells.get(i)
-							.getStringCellValue();
+							.getStringCellValue().toLowerCase();
 				}
-
 			}
 
-			Pair<String, String> log = new Pair<String, String>(
-					measurementDetail, enstrumentDetail);
-			logs.add(log);
-			
+			if (enstrumentDetail.length() == 0
+					|| measurementDetail.length() == 0) {
+				System.out.println("No data found for cell (" + i + ")");
+				continue;
+			}
+
 			Event event = new Event();
-			event.setAddress(readLocation(measurementDetail));
+
 			event.setCompanyName("");
-			event.setEquipments(readEquipments(enstrumentDetail));
 			event.setMeasurements(new ArrayList<Measurement>());
-			
+
+			String location = readLocation(measurementDetail);
+			System.out.println("Location read as (" + location + ")");
+			event.setAddress(location);
+
+			List<MeasureEquipment> equipments = readEquipments(enstrumentDetail);
+			if (equipments.size() > 0) {
+				event.setEquipments(equipments);
+			}
+
+			List<String> workers = getWorkersForLine(measurementDetail);
+			if (workers.size() > 0) {
+				EmployeeServiceImpl employeeServiceImpl = new EmployeeServiceImpl();
+				event.setWorkers(employeeServiceImpl.getAllByNames(workers));
+			}
+
 			events.add(event);
-			
 		}
-		return logs;
+		return events;
 	}
 
 	private static List<String> getWorkersForLine(String line) {
@@ -362,40 +383,33 @@ public class Reader {
 		for (Pair<Row, Row> rowPair : rowPairs) {
 			Date date = readDate(rowPair);
 			System.out.println("date read as : " + date);
-			
+
 			WorkLog day = new WorkLog();
 			day.setDay(date);
-			//day.getEvents().add(e)
-			
-			
-			// System.out.println("Date of row is " + date);
-			List<Pair<String, String>> dailyEvents = readEvents(rowPair);
-			System.out.println("dailyEvents read. size:"+dailyEvents.size());
-			totalCells = totalCells + dailyEvents.size();
+			// day.getEvents().add(e)
 
-			for (Pair<String, String> event : dailyEvents) {
-				// System.out.println("*** " + date + " ****");
-				// System.out.println(workLog.getValue0());
-				// System.out.println("----------");
-				// System.out.println(workLog.getValue1());
-				// System.out.println("==========");
-				Event eventObj = new Event();
-				
-				
-				
-				List<String> workers = getWorkersForLine(event.getValue0());
-				if (workers.size() > 0) {
-					EmployeeServiceImpl employeeServiceImpl = new EmployeeServiceImpl();
-					eventObj.setWorkers(employeeServiceImpl.getAllByNames(workers));
-					eventObj.setEquipments(equipments);
-					
-				} else {
-					totalFailedCells++;
-				}
-			}
+			// System.out.println("Date of row is " + date);
+			List<Event> dailyEvents = readEvents(rowPair);
+			day.setEvents(dailyEvents);
+			workLogs.add(day);
+
 		}
 		System.out.println("PROCESSED day count:" + totalPairs + " work count:"
 				+ totalCells + " failCount:" + totalFailedCells);
+
+		System.out.println("-------------------------------");
+		System.out.println("-------------------------------");
+		System.out.println("-------------------------------");
+		// System.out.println(workLogs);
+		System.out.println("-------------------------------");
+
+		try {
+			Reader.writeJsonStream("out.json", workLogs);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("-------------------------------");
 
 		/*
 		 * Cell cell = row.getCell(3); if (cell == null) cell =
@@ -413,5 +427,20 @@ public class Reader {
 		 * System.out.println("oleeyy"); } catch (IOException e) { // TODO
 		 * Auto-generated catch block e.printStackTrace(); return; }
 		 */
+	}
+
+	public static void writeJsonStream(String path, List<WorkLog> workLogs)
+			throws IOException {
+		JsonWriter writer = new JsonWriter(new OutputStreamWriter(
+				new FileOutputStream(Constants.Paths.TargetPath + path),
+				"UTF-8"));
+		writer.setIndent("  ");
+		writer.beginArray();
+		Gson gson = new Gson();
+		for (WorkLog log : workLogs) {
+			gson.toJson(log, WorkLog.class, writer);
+		}
+		writer.endArray();
+		writer.close();
 	}
 }

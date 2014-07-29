@@ -20,4 +20,16 @@ public class MeasureEquipment {
 	public void setToolName(String toolName) {
 		this.toolName = toolName;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("MeasureEquipment [toolName=");
+		builder.append(toolName);
+		builder.append(", count=");
+		builder.append(count);
+		builder.append("]");
+		return builder.toString();
+	}
+
 }

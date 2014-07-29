@@ -1,5 +1,6 @@
 package com.measurements.worklogs;
 
+import java.util.Date;
 import java.util.List;
 
 import com.measurements.employees.Employee;
@@ -61,6 +62,25 @@ public class Event {
 
 	public void setWorkers(List<Employee> workers) {
 		this.workers = workers;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Event [companyName=");
+		builder.append(companyName);
+		builder.append(", address=");
+		builder.append(address);
+		builder.append(", measurements=");
+		builder.append(measurements);
+		builder.append(", vehicle=");
+		builder.append(vehicle);
+		builder.append(", equipments=");
+		builder.append(equipments);
+		builder.append(", workers=");
+		builder.append(workers);
+		builder.append("]");
+		return builder.toString();
 	}
 
 }

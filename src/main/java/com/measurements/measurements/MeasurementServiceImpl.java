@@ -17,6 +17,7 @@ public class MeasurementServiceImpl {
 	}
 
 	private void buildEquipments() {
+		names.clear();
 		List<Equipment> equipments = getAllEquipments();
 		CollectionUtils.forAllDo(equipments, new Closure() {
 			public void execute(Object arg0) {

@@ -17,11 +17,12 @@ public class EquipmentServiceImpl implements EquipmentService {
 	}
 
 	private void buildEquipments() {
+		names.clear();
 		List<Equipment> equipments = getAllEquipments();
 		CollectionUtils.forAllDo(equipments, new Closure() {
 			public void execute(Object arg0) {
 				Equipment equipment = (Equipment) arg0;
-				names.add(equipment.getName());
+				names.add(equipment.getName().toLowerCase());
 			}
 		});
 	}

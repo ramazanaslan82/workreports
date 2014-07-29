@@ -185,5 +185,13 @@
 			<artifactId>commons-lang</artifactId>
 			<version>2.2</version>
 		</dependency>
+
+		<!-- google json project -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.4</version>
+		</dependency>
+
 	</dependencies>
 </project>

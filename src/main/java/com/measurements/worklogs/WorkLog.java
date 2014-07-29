@@ -25,4 +25,15 @@ public class WorkLog {
 		this.events = events;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("WorkLog [day=");
+		builder.append(day);
+		builder.append(", events=");
+		builder.append(events);
+		builder.append("]");
+		return builder.toString();
+	}
+
 }

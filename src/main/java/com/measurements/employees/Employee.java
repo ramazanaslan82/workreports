@@ -17,4 +17,13 @@ public class Employee {
 		this.name = name;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Employee [name=");
+		builder.append(name);
+		builder.append("]");
+		return builder.toString();
+	}
+
 }

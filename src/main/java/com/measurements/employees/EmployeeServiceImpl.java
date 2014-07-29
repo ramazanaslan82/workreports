@@ -16,6 +16,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	private void buildWorkers() {
+		names.clear();
 		List<Employee> workers = getAllWorkers();
 		CollectionUtils.forAllDo(workers, new Closure() {
 			public void execute(Object arg0) {
