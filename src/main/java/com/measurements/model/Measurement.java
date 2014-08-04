@@ -1,13 +1,9 @@
-package model;
+package com.measurements.model;
 
-public class Employee {
+public class Measurement {
 
 	private String name;
-
-	public Employee(String name) {
-		super();
-		this.name = name;
-	}
+	private int points;
 
 	public String getName() {
 		return name;
@@ -17,11 +13,21 @@ public class Employee {
 		this.name = name;
 	}
 
+	public int getPoints() {
+		return points;
+	}
+
+	public void setPoints(int count) {
+		this.points = count;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Employee [name=");
+		builder.append("Measurement [name=");
 		builder.append(name);
+		builder.append(", points=");
+		builder.append(points);
 		builder.append("]");
 		return builder.toString();
 	}

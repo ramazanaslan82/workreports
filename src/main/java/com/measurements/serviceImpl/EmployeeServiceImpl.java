@@ -1,16 +1,23 @@
-package serviceImpl;
+package com.measurements.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Employee;
-
 import org.apache.commons.collections.Closure;
 import org.apache.commons.collections.CollectionUtils;
 
-import service.EmployeeService;
+import com.measurements.dao.EmployeeDao;
+import com.measurements.model.Employee;
+import com.measurements.service.EmployeeService;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
 public class EmployeeServiceImpl implements EmployeeService {
+
+	@Autowired
+	private EmployeeDao employeeDao;
 
 	private static List<String> names = new ArrayList<String>();
 
@@ -73,5 +80,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 			employees.add(getByName(employeeName));
 		}
 		return employees;
+	}
+	
+	public void saveEmployeeByName(String name)
+	{
+		List<Employee> list = employeeDao.getAllByName(name);
+		if(list.size()>0)
+		{
+			return;
+		}
+		Employee employee = new Employee(name);
+		employeeDao.save(employee);
 	}
 }

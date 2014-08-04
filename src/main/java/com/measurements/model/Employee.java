@@ -1,9 +1,16 @@
-package model;
+package com.measurements.model;
 
-public class Measurement {
+import javax.persistence.Entity;
+
+@Entity
+public class Employee {
 
 	private String name;
-	private int points;
+
+	public Employee(String name) {
+		super();
+		this.name = name;
+	}
 
 	public String getName() {
 		return name;
@@ -13,21 +20,11 @@ public class Measurement {
 		this.name = name;
 	}
 
-	public int getPoints() {
-		return points;
-	}
-
-	public void setPoints(int count) {
-		this.points = count;
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Measurement [name=");
+		builder.append("Employee [name=");
 		builder.append(name);
-		builder.append(", points=");
-		builder.append(points);
 		builder.append("]");
 		return builder.toString();
 	}

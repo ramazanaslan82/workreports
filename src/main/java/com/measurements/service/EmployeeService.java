@@ -1,8 +1,8 @@
-package service;
+package com.measurements.service;
 
 import java.util.List;
-import java.util.Set;
 
 public interface EmployeeService {
 	List<String> getWorkerNames();
+	void saveEmployeeByName(String name);
 }

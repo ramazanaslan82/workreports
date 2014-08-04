@@ -18,7 +18,7 @@
 		<spring-framework.version>3.0.5.RELEASE</spring-framework.version>
 
 		<!-- Hibernate / JPA -->
-		<hibernate.version>3.3.2.GA</hibernate.version>
+		<hibernate.version>3.5.6-Final</hibernate.version>
 
 		<!-- c3po -->
 		<c3po.version>0.9.1.2</c3po.version>
@@ -35,6 +35,10 @@
 
 		<!-- Jackson -->
 		<jackson.version>1.8.5</jackson.version>
+
+		<!-- Mysql driver -->
+		<jdbcmysqldriver.version>5.1.31</jdbcmysqldriver.version>
+
 	</properties>
 
 
@@ -65,6 +69,19 @@
 			<version>${spring-framework.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring-framework.version}</version>
+		</dependency>
+
+		<!-- MySql 5.5 Connector -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${jdbcmysqldriver.version}</version>
+		</dependency>
+
 		<!-- Logging with SLF4J & LogBack -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -84,6 +101,12 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
 

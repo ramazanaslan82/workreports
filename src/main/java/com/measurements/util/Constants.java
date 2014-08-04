@@ -1,4 +1,4 @@
-package util;
+package com.measurements.util;
 
 public interface Constants {
 	interface Paths {

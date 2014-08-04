@@ -1,23 +1,15 @@
-package util;
+package com.measurements.serviceImpl;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
-import model.Event;
-import model.MeasureEquipment;
-import model.Measurement;
-import model.WorkLog;
-
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -27,15 +19,19 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.javatuples.Pair;
-
-import service.EquipmentService;
-import serviceImpl.EmployeeServiceImpl;
-import serviceImpl.EquipmentServiceImpl;
+import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
+import com.measurements.model.Event;
+import com.measurements.model.MeasureEquipment;
+import com.measurements.model.Measurement;
+import com.measurements.model.WorkLog;
+import com.measurements.service.ReaderService;
+import com.measurements.util.Constants;
 
-public class Reader {
+@Service
+public class ReaderServiceImpl implements ReaderService {
 
 	private static InputStream loadFile(String fileName) {
 		InputStream inp = null;
@@ -281,7 +277,7 @@ public class Reader {
 
 					String remaining = string.replaceFirst(
 							equipmentName.toLowerCase(), "").replace(" adet",
-							"");
+							"").replace("-", "");
 					int m = 1;
 					try {
 						m = Integer.valueOf(remaining);
@@ -396,8 +392,8 @@ public class Reader {
 		return workersAtWork;
 	}
 
-	public static void main(String[] args) {
-
+	public List<WorkLog> readFile()
+	{
 		InputStream inp = loadFile("excel-25-06-2014.xls");
 		Workbook wb = createWorkbook(inp);
 		List<Sheet> sheets = getSheets(wb);
@@ -433,12 +429,13 @@ public class Reader {
 		System.out.println("-------------------------------");
 
 		try {
-			Reader.writeJsonStream("out.json", workLogs);
+			ReaderServiceImpl.writeJsonStream("out.json", workLogs);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("-------------------------------");
+		return workLogs;
 
 		/*
 		 * Cell cell = row.getCell(3); if (cell == null) cell =
@@ -457,7 +454,7 @@ public class Reader {
 		 * Auto-generated catch block e.printStackTrace(); return; }
 		 */
 	}
-
+	
 	public static void writeJsonStream(String path, List<WorkLog> workLogs)
 			throws IOException {
 		JsonWriter writer = new JsonWriter(new OutputStreamWriter(

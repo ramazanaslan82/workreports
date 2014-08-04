@@ -1,20 +1,20 @@
-package serviceImpl;
+package com.measurements.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Employee;
-import model.Equipment;
-
 import org.apache.commons.collections.Closure;
 import org.apache.commons.collections.CollectionUtils;
 
-import service.EquipmentService;
+import com.measurements.model.Equipment;
 
-public class EquipmentServiceImpl implements EquipmentService {
+import org.springframework.stereotype.Service;
+
+@Service
+public class MeasurementServiceImpl {
 	private static List<String> names = new ArrayList<String>();
 
-	public EquipmentServiceImpl() {
+	public MeasurementServiceImpl() {
 		super();
 		buildEquipments();
 	}
@@ -25,7 +25,7 @@ public class EquipmentServiceImpl implements EquipmentService {
 		CollectionUtils.forAllDo(equipments, new Closure() {
 			public void execute(Object arg0) {
 				Equipment equipment = (Equipment) arg0;
-				names.add(equipment.getName().toLowerCase());
+				names.add(equipment.getName());
 			}
 		});
 	}
