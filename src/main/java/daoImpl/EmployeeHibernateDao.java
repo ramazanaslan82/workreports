@@ -1,14 +1,16 @@
-package com.measurements.employees.dao;
+package daoImpl;
+
+import model.Employee;
 
 import org.hibernate.SessionFactory;
 
-import com.measurements.employees.Employee;
+import dao.EmployeeDao;
 
-public class EmployeeHibernateDao {
+public class EmployeeHibernateDao implements EmployeeDao {
 	private SessionFactory sessionFactory;
-	
-	private Employee loadEmployee(Long id){
-		
+
+	private Employee loadEmployee(Long id) {
+
 		return null;
 	}
 

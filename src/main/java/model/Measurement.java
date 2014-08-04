@@ -1,4 +1,4 @@
-package com.measurements.measurements;
+package model;
 
 public class Measurement {
 

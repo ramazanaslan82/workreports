@@ -1,4 +1,4 @@
-package com.measurements.employees;
+package model;
 
 public class Employee {
 

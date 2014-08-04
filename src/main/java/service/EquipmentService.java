@@ -1,4 +1,4 @@
-package com.measurements.equipments;
+package service;
 
 public interface EquipmentService {
 

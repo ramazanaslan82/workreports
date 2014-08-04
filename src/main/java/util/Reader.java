@@ -1,4 +1,4 @@
-package com.measurements.wrappers;
+package util;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -12,6 +12,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import model.Event;
+import model.MeasureEquipment;
+import model.Measurement;
+import model.WorkLog;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -23,15 +28,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.javatuples.Pair;
 
+import service.EquipmentService;
+import serviceImpl.EmployeeServiceImpl;
+import serviceImpl.EquipmentServiceImpl;
+
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
-import com.measurements.employees.EmployeeServiceImpl;
-import com.measurements.equipments.EquipmentService;
-import com.measurements.equipments.EquipmentServiceImpl;
-import com.measurements.measurements.MeasureEquipment;
-import com.measurements.measurements.Measurement;
-import com.measurements.worklogs.Event;
-import com.measurements.worklogs.WorkLog;
 
 public class Reader {
 
@@ -134,6 +136,10 @@ public class Reader {
 	private static String getFirstCellValue(Row row) {
 		List<Cell> cells = loadCells(row);
 		Cell cell = cells.get(0);
+		if(cell == null)
+		{
+			return "";
+		}
 		cell.getDateCellValue();
 		return cell.getDateCellValue().toString();
 	}
@@ -147,12 +153,22 @@ public class Reader {
 
 		// System.out.println("Row contains " + cells.size() + " cells");
 
+		
 		Cell cell = cells.get(1);
-		int cellType = cell.getCellType();
-		if (HSSFCell.CELL_TYPE_BLANK == cellType) {
-			// System.out.println("Cell is EMPTY");
+		
+		try
+		{
+			Integer cellType = cell.getCellType();
+			if (HSSFCell.CELL_TYPE_BLANK == cellType) {
+				// System.out.println("Cell is EMPTY");
+				return false;
+			}
+		} catch (Exception e)
+		{
+			System.out.println("Cell.size:"+cells.size());
 			return false;
 		}
+		
 
 		String value = cell.getStringCellValue();
 		if ("Pazar".equals(value)) {
@@ -165,6 +181,11 @@ public class Reader {
 	private static boolean isRowContainsNextDay(Row row) {
 		List<Cell> cells = loadCells(row);
 		Cell cell = cells.get(0); // Not : date alan� ilk kolon
+		if(cell == null)
+		{
+			return false;
+		}
+
 		Date value = cell.getDateCellValue();
 		if (null != value) {
 			// System.out.println("Next line has date field:" + value);
@@ -176,6 +197,10 @@ public class Reader {
 	private static boolean isRowHasFutureDate(Row row) {
 		List<Cell> cells = loadCells(row);
 		Cell cell = cells.get(0); // Not : date alan� ilk kolon
+		if(cell == null)
+		{
+			return false;
+		}
 		Date value = cell.getDateCellValue();
 		if (null != value) {
 			// System.out.println("Line has date field:" + value);
@@ -201,6 +226,10 @@ public class Reader {
 		Row firstRow = rowPair.getValue0();
 		List<Cell> cells = loadCells(firstRow);
 		Cell cell = cells.get(0);
+		if(cell == null)
+		{
+			return null;
+		}
 		Date date = cell.getDateCellValue();
 		return date;
 	}
@@ -369,7 +398,7 @@ public class Reader {
 
 	public static void main(String[] args) {
 
-		InputStream inp = loadFile("OLCUM_PROGRAMI-25.06.2014.xls");
+		InputStream inp = loadFile("excel-25-06-2014.xls");
 		Workbook wb = createWorkbook(inp);
 		List<Sheet> sheets = getSheets(wb);
 		Sheet sheet = sheets.get(0);

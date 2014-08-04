@@ -1,11 +1,7 @@
-package com.measurements.worklogs;
+package model;
 
 import java.util.Date;
 import java.util.List;
-
-import com.measurements.employees.Employee;
-import com.measurements.measurements.MeasureEquipment;
-import com.measurements.measurements.Measurement;
 
 public class Event {
 

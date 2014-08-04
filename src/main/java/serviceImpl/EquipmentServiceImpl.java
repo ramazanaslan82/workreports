@@ -1,17 +1,20 @@
-package com.measurements.measurements;
+package serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Employee;
+import model.Equipment;
+
 import org.apache.commons.collections.Closure;
 import org.apache.commons.collections.CollectionUtils;
 
-import com.measurements.equipments.Equipment;
+import service.EquipmentService;
 
-public class MeasurementServiceImpl {
+public class EquipmentServiceImpl implements EquipmentService {
 	private static List<String> names = new ArrayList<String>();
 
-	public MeasurementServiceImpl() {
+	public EquipmentServiceImpl() {
 		super();
 		buildEquipments();
 	}
@@ -22,7 +25,7 @@ public class MeasurementServiceImpl {
 		CollectionUtils.forAllDo(equipments, new Closure() {
 			public void execute(Object arg0) {
 				Equipment equipment = (Equipment) arg0;
-				names.add(equipment.getName());
+				names.add(equipment.getName().toLowerCase());
 			}
 		});
 	}
