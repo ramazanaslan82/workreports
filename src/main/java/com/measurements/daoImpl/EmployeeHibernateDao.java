@@ -7,11 +7,16 @@ import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.measurements.dao.EmployeeDao;
 import com.measurements.model.Employee;
 
+@Repository
 public class EmployeeHibernateDao implements EmployeeDao {
+	
+	@Autowired
 	private SessionFactory sessionFactory;
 
 	private Employee loadEmployee(Long id) {

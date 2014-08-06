@@ -2,17 +2,28 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 	
 	<context:annotation-config></context:annotation-config>
+	 <tx:annotation-driven/>
 	<context:component-scan base-package="com.measurements"></context:component-scan>
+	<context:component-scan base-package="com.measurements.model"></context:component-scan>
 
-	<bean id="transactionManager"
+    <bean id="transactionManager"
+            class="org.springframework.orm.hibernate3.HibernateTransactionManager"
+            p:sessionFactory-ref="sessionFactory"></bean>
+    
+    <!-- 
+	<bean id="transactionManager2"
 		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
+	 -->
 
 	<!-- Hibernate session factory -->
 	<bean id="sessionFactory"
@@ -26,6 +37,7 @@
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
 			</props>
 		</property>
 	</bean>

@@ -12,6 +12,7 @@ import com.measurements.service.EmployeeService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -82,9 +83,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return employees;
 	}
 	
+	@Transactional
 	public void saveEmployeeByName(String name)
 	{
-		List<Employee> list = employeeDao.getAllByName(name);
+		if(null == employeeDao)
+		{
+			System.out.println("employeeDao is null");
+			return;
+		}
+		employeeDao.getAllByName(name);
+		List<Employee> list = new ArrayList<Employee>();
 		if(list.size()>0)
 		{
 			return;
