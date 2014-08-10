@@ -91,8 +91,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 			System.out.println("employeeDao is null");
 			return;
 		}
-		employeeDao.getAllByName(name);
-		List<Employee> list = new ArrayList<Employee>();
+		
+		List<Employee> list = employeeDao.getAllByName(name);
 		if(list.size()>0)
 		{
 			return;

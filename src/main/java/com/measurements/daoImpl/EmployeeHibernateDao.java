@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import com.measurements.dao.EmployeeDao;
 import com.measurements.model.Employee;
 
-@Repository
+@Repository(value="employeeDao")
 public class EmployeeHibernateDao implements EmployeeDao {
 	
 	@Autowired
@@ -45,9 +45,11 @@ public class EmployeeHibernateDao implements EmployeeDao {
 	
 	public void save(Employee employee)
 	{
-		Session currentSession = getSessionFactory().getCurrentSession();
+		//Session currentSession = getSessionFactory().getCurrentSession();
+		Session currentSession = getSessionFactory().openSession();
 		currentSession.beginTransaction();
 		currentSession.save(employee);
 		currentSession.getTransaction().commit();
+		currentSession.close();
 	}
 }
