@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.TableGenerator;
 
 @Entity
 @Table(name="employees")
@@ -17,8 +16,9 @@ public class Employee implements Serializable {
 	private static final long serialVersionUID = -4729268226721761675L;
 
 	@Id
-	@TableGenerator(name = "TABLE_GEN", table = "SEQUENCE_TABLE", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "EMP_SEQ")
-	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
+	//@TableGenerator(name = "TABLE_GEN", table = "SEQUENCE_TABLE", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "EMP_SEQ")
+	//@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="id")
 	private Long id;
 	
